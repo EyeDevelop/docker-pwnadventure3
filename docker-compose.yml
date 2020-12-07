@@ -1,0 +1,36 @@
+version: '3'
+services:
+  master:
+    build:
+      context: ./master
+    image: eyedevelop/pwn3master:latest
+    container_name: pwn3master
+    volumes:
+      - "./vol/data:/data"
+    ports:
+      - "3333:3333"
+    environment:
+      - PUID=1000
+      - PGID=1000
+  
+  game:
+    build:
+      context: ./game
+    image: eyedevelop/pwn3game:latest
+    container_name: pwn3game
+    depends_on:
+      - master
+    volumes:
+      - "./vol/data:/data"
+    ports:
+      - "3000:3000"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - MASTER_HOSTNAME=pwn3master
+      - MASTER_PORT=3333
+      - GAME_HOSTNAME=game.pwn3
+      - GAME_PORT=3000
+      - GAME_USERNAME=spat_out_by_master
+      - GAME_PASSWORD=spat_out_by_master
+      - GAME_INSTANCES=3
